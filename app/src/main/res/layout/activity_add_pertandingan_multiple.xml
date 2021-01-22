@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddPertandinganMultiple">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_above="@id/btnSave"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tambah Pertandingan"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingVertical="20dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/rvAddPertandingan"
+                tools:listitem="@layout/item_add_pertandingan"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tambah Pertandingan +"
+                android:layout_marginHorizontal="20dp"
+                android:id="@+id/addPertandingan"
+                android:layout_marginVertical="20dp"
+                android:textColor="@color/design_default_color_primary" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Simpan"
+        android:layout_marginTop="20dp"
+        android:paddingVertical="15dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/white"
+        app:cornerRadius="20dp"
+        app:backgroundTint="@color/design_default_color_primary"
+        android:layout_marginHorizontal="20dp" />
+
+</RelativeLayout>

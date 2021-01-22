@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Klasemen Sepak Bola</string>
+    <array name="string_dummy">
+        <item>Helo</item>
+        <item>Helo</item>
+        <item>Helo</item>
+        <item>Helo</item>
+    </array>
+</resources>
