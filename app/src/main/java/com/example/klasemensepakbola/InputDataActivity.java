@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -18,7 +19,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputDataActivity extends AppCompatActivity {
+public class InputDataActivity extends BaseActivity {
 
     List<Klub> klubList = new ArrayList<>();
     SharedPreferenceHelper sharedPreferenceHelper;
@@ -27,38 +28,19 @@ public class InputDataActivity extends AppCompatActivity {
     Button btnSave;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreateStuff() {
         setContentView(R.layout.activity_input_data);
+    }
 
+    @Override
+    protected void initUi() {
         sharedPreferenceHelper = new SharedPreferenceHelper(this);
 
-        if (!sharedPreferenceHelper.getClub().isEmpty()) {
-            Gson gson = new Gson();
-            String klubListString = sharedPreferenceHelper.getClub();
-            Type type = new TypeToken<List<Klub>>(){}.getType();
-            klubList = gson.fromJson(klubListString, type);
-        }
+        getData();
 
         etKotaKlub = findViewById(R.id.etKotaKlub);
         etNamaKlub = findViewById(R.id.etClubName);
         btnSave = findViewById(R.id.btnSave);
-
-        btnSave.setOnClickListener(v -> {
-            if (etNamaKlub.getText().toString().isEmpty()) {
-                Toast.makeText(this, "Nama Klub tidak boleh kosong", Toast.LENGTH_SHORT).show();
-            } else if (etKotaKlub.getText().toString().isEmpty()) {
-                Toast.makeText(this, "Kota Klub tidak boleh kosong", Toast.LENGTH_SHORT).show();
-            } else if (!containSameNameClub()) {
-                Toast.makeText(this, "Nama Klub sudah ada", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Berhasil menambahkan klub", Toast.LENGTH_SHORT).show();
-                klubList.add(new Klub(etNamaKlub.getText().toString(), etKotaKlub.getText().toString(), 0, 0, 0, 0, 0, 0, 0));
-                sharedPreferenceHelper.addClub(klubList);
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-            }
-        });
     }
 
     private boolean containSameNameClub() {
@@ -72,6 +54,39 @@ public class InputDataActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    private void getData() {
+        if (!sharedPreferenceHelper.getClub().isEmpty()) {
+            Gson gson = new Gson();
+            String klubListString = sharedPreferenceHelper.getClub();
+            Type type = new TypeToken<List<Klub>>(){}.getType();
+            klubList = gson.fromJson(klubListString, type);
+        }
+    }
+
+    @Override
+    protected void initListener() {
+        btnSave.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btnSave) {
+            if (etNamaKlub.getText().toString().isEmpty()) {
+                showToast(this, "Nama Klub tidak boleh kosong");
+            } else if (etKotaKlub.getText().toString().isEmpty()) {
+                showToast(this, "Kota Klub tidak boleh kosong");
+            } else if (!containSameNameClub()) {
+                showToast(this, "Nama Klub sudah ada");
+            } else {
+                showToast(this, "Berhasil menambahkan klub");
+                klubList.add(new Klub(etNamaKlub.getText().toString(), etKotaKlub.getText().toString(), 0, 0, 0, 0, 0, 0, 0));
+                sharedPreferenceHelper.addClub(klubList);
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            }
+        }
     }
 
     @Override

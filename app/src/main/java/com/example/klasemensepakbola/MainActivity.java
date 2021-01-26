@@ -22,6 +22,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,36 +42,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         sharedPreferenceHelper = new SharedPreferenceHelper(this);
 
-        if (!sharedPreferenceHelper.getClub().isEmpty()) {
-            Gson gson = new Gson();
-            String klubListString = sharedPreferenceHelper.getClub();
-            Type type = new TypeToken<List<Klub>>(){}.getType();
-            klubList = gson.fromJson(klubListString, type);
+        getData();
+        initUi();
 
-            Log.e("Main", "onCreate: " + klubList);
-        }
+        setOnClickListener();
+    }
 
-        emptyTable = findViewById(R.id.emptyTable);
-
-        klasemenAdapter = new KlasemenAdapter(this, klubList);
-        rvKlasemen = findViewById(R.id.rvKlub);
-
-        rvKlasemen.setLayoutManager(new LinearLayoutManager(this));
-        rvKlasemen.setAdapter(klasemenAdapter);
-
-        if (klubList.size() == 0) {
-            emptyTable.setVisibility(View.VISIBLE);
-        } else {
-            emptyTable.setVisibility(View.GONE);
-        }
-
-        btnAddData = findViewById(R.id.btnAddData);
+    private void setOnClickListener() {
         btnAddData.setOnClickListener(v -> {
             startActivity(new Intent(this, InputDataActivity.class));
             finish();
         });
 
-        btnAddPertandingan = findViewById(R.id.btnAddPertandingan);
         btnAddPertandingan.setOnClickListener(v -> {
             if (klubList.size() == 0) {
                 Toast.makeText(this, "Klub belum tersedia, silahkan tambah klub", Toast.LENGTH_SHORT).show();
@@ -93,5 +77,35 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+    }
+
+    private void getData() {
+        if (!sharedPreferenceHelper.getClub().isEmpty()) {
+            Gson gson = new Gson();
+            String klubListString = sharedPreferenceHelper.getClub();
+            Type type = new TypeToken<List<Klub>>(){}.getType();
+            klubList = gson.fromJson(klubListString, type);
+            Collections.sort(klubList, (o1, o2) -> o2.getJumlahPoin().compareTo(o1.getJumlahPoin()));
+
+            Log.e("Main", "onCreate: " + klubList);
+        }
+    }
+
+    private void initUi() {
+        emptyTable = findViewById(R.id.emptyTable);
+        rvKlasemen = findViewById(R.id.rvKlub);
+        btnAddData = findViewById(R.id.btnAddData);
+        btnAddPertandingan = findViewById(R.id.btnAddPertandingan);
+
+        klasemenAdapter = new KlasemenAdapter(this, klubList);
+
+        rvKlasemen.setLayoutManager(new LinearLayoutManager(this));
+        rvKlasemen.setAdapter(klasemenAdapter);
+
+        if (klubList.size() == 0) {
+            emptyTable.setVisibility(View.VISIBLE);
+        } else {
+            emptyTable.setVisibility(View.GONE);
+        }
     }
 }
